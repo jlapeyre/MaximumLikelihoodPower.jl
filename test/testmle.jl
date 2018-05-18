@@ -1,6 +1,8 @@
 # TODO: Finish this and move to test directory
 
-using MLEPower
+using MaximumLikelihoodEstimatePower
+
+import MaximumLikelihoodEstimatePower: KSstatistic
 
 """
     MyPareto(alpha::Float64,x0::Float64)
@@ -34,7 +36,7 @@ end
 
 Compute the Kolmogorov Smirnov statistic for several values of α.
 Return the minimizing α and the two neighboring values. The minimizer
-if closest to 0.5, the value used in the Pareto distribution.
+is closest to 0.5, the value used in the Pareto distribution.
 """
 function testKS(data)
     powers = linspace(.4,.6,11)
@@ -56,4 +58,8 @@ function testmle1(nend)
     (alphahat, stddev) = EmpiricalCDFs.mle(data[end-nend:end]) # , data[end-nend])
     KSstatistic = EmpiricalCDFs.KStest(data[end-nend:end], alphahat)
     return (alphahat, stddev, KSstatistic)
+end
+
+let d = makedata()
+    @test compKS(d)
 end
