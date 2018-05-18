@@ -4,7 +4,7 @@
 Return the maximum likelihood estimate and standard error of the exponent of a power law
 applied to the sorted vector `data`.
 """
-function mle{T<:AbstractFloat}(data::AbstractVector{T})
+function mle(data::AbstractVector{T}) where T <: AbstractFloat
     xmin = data[1]
     acc = zero(xmin)
     xlast = Inf
@@ -29,7 +29,7 @@ Return the Kolmogorv-Smirnov statistic
 comparing `data` to a power law with power `alpha`. The elements of `data` are
 assumed to be unique.
 """
-function KSstatistic{T<:AbstractFloat}(data::AbstractVector{T}, alpha)
+function KSstatistic(data::AbstractVector{T}, alpha) where T <: AbstractFloat
     n = length(data)
     xmin = data[1]
     maxdistance = zero(xmin)
@@ -60,7 +60,7 @@ Return the maximum likelihood estimate and standard error of the exponent of a p
 applied to the sorted vector `data`. Also return the Kolmogorv-Smirnov statistic. Results
 are returned in an instance of type `MLEKS`.
 """
-function mleKS{T<:AbstractFloat}(data::AbstractVector{T})
+function mleKS(data::AbstractVector{T})  where T <: AbstractFloat
     (alpha,stderr) = mle(data)
     KSstat = KSstatistic(data, alpha)
     MLEKS(alpha,stderr,KSstat)
@@ -78,7 +78,7 @@ type MLEScan{T <: AbstractFloat}
     xmin::T
     imin::Int
     npts::Int
-    nptsall::Int    
+    nptsall::Int
     ntrials::Int
 end
 
@@ -87,7 +87,7 @@ function Base.show(io::IO, s::MLEScan)
 #    println(io, "alpha   = " , s.alpha)
 #    println(io, "stderr  = " , s.stderr)
     @printf(io, "alpha   = %.8f\n" , s.alpha)
-    @printf(io, "stderr  = %.8f\n" , s.stderr) 
+    @printf(io, "stderr  = %.8f\n" , s.stderr)
     println(io, "minKS   = " , s.minKS)
     println(io, "xmin    = " , s.xmin)
     println(io, "imin    = " , s.imin)
@@ -128,7 +128,7 @@ Perform `mle` approximately `ntrials` times on `data`, increasing `xmin`. Stop t
 if the `stderr` of the estimate `alpha` is greater than `stderrcutoff`. Return an object
 containing statistics about the scan.
 """
-function scanmle{T<:AbstractFloat}(data::AbstractVector{T}, ntrials, stderrcutoff)
+function scanmle(data::AbstractVector{T}, ntrials, stderrcutoff) where T <: AbstractFloat
     skip = convert(Int,round(length(data)/ntrials))
     if skip < 1
         skip = 1
@@ -136,8 +136,8 @@ function scanmle{T<:AbstractFloat}(data::AbstractVector{T}, ntrials, stderrcutof
     _scanmle(data, 1:skip:length(data), stderrcutoff)
 end
 
-scanmle{T<:AbstractFloat}(data::AbstractVector{T}, ntrials) = scanmle(data,ntrials, 0.1)
-scanmle{T<:AbstractFloat}(data::AbstractVector{T}) = scanmle(data,100)
+scanmle(data::AbstractVector{T}, ntrials) where T <: AbstractFloat = scanmle(data,ntrials, 0.1)
+scanmle(data::AbstractVector{T}) where T <: AbstractFloat = scanmle(data,100)
 
 """
     _scanmle{T<:AbstractFloat, V <: Integer}(data::AbstractVector{T}, range::AbstractVector{V},stderrcutoff)
@@ -145,8 +145,8 @@ scanmle{T<:AbstractFloat}(data::AbstractVector{T}) = scanmle(data,100)
 Inner function for scanning power-law mle for power `alpha` over `xmin`. `range` specifies which `xmin` to try.
 `stderrcutoff` specifies a standard error in `alpha` at which we stop trials. `range` should be increasing.
 """
-function _scanmle{T<:AbstractFloat, V <: Integer}(data::AbstractVector{T}, range::AbstractVector{V},
-                                    stderrcutoff)
+function _scanmle(data::AbstractVector{T}, range::AbstractVector{V},
+                                    stderrcutoff) where T <: AbstractFloat where V <: Integer
     mlescan = MLEScan(T)
     mlescan.nptsall = length(data)
     for i in range
