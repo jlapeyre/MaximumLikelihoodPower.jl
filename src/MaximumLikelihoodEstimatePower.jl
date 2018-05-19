@@ -7,4 +7,4 @@ using Compat
 include("mle.jl")
 include("aux.jl")
 
-end # module 
+end # module

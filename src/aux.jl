@@ -7,7 +7,7 @@ Pareto distribution for sampling. This does not depend on Distributions and
 the RNG seed can be set. This may not be needed for future versions of Julia.
 """
 immutable MyPareto
-    alpha::Float64    
+    alpha::Float64
     x0::Float64
 end
 MyPareto(alpha=1.0) = MyPareto(alpha,1.0)

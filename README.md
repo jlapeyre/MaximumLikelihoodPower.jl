@@ -26,7 +26,7 @@ julia> data = MLE.Examples.makedata(α,seed);
 julia> MLE.scanKS(data, Compat.range(.4, length=11, stop=.6))
 3-element Array{Float64,1}:
  0.48
- 0.5 
+ 0.5
  0.52
 
 # Perform mle several times. This estimates the exponent
@@ -59,6 +59,12 @@ comparing `data` to a power law with power `alpha`. The elements of `data` are
 assumed to be unique. Minimizing the KS statistic over alpha is another way
 to estimate the parameter of the sample distribution. See `testKS` in the
 `test` directory.
+
+### scanKS(data, powers)
+
+Compute the Kolmogorov Smirnov statistic for several values of α in
+the iterator `powers`. Return the value of α
+that minimizes the KS statistic and the two neighboring values.
 
 ### mleKS
 
