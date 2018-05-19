@@ -7,7 +7,8 @@ Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/github/jla
 [![Coverage Status](https://coveralls.io/repos/github/jlapeyre/MaximumLikelihoodEstimatePower.jl/badge.svg?branch=master)](https://coveralls.io/github/jlapeyre/MaximumLikelihoodEstimatePower.jl?branch=master)
 [![codecov.io](http://codecov.io/github/jlapeyre/MaximumLikelihoodEstimatePower.jl/coverage.svg?branch=master)](http://codecov.io/github/jlapeyre/MaximumLikelihoodEstimatePower.jl?branch=master)
 
-Physicists love power laws.
+Physicists love power laws. But, they don't always use the best methods for extracting powers
+from empirical data.
 
 ```
 using Compat
@@ -92,6 +93,14 @@ containing statistics about the scan.
 ```
 compare the results of MLE estimation `mle` to record results
 in `mlescan` and update `mlescan`.
+
+
+### Reference
+
+Clauset, A., Shalizi, C. R., & Newman, M. E. J. (**2009**).
+*Power-Law Distributions in Empirical Data*. SIAM Review, 51(4),
+661–703. http://dx.doi.org/10.1137/070710111
+
 
 <!--  LocalWords:  MaximumLikelihoodEstimatePower OSX nbsp codecov io
  -->
