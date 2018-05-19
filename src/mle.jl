@@ -4,7 +4,7 @@
 Return the maximum likelihood estimate and standard error of the exponent of a power law
 applied to the sorted vector `data`.
 """
-function mle(data::AbstractVector{T}) where T <: AbstractFloat
+function mle(data::AbstractVector{<:AbstractFloat})
     xmin = data[1]
     acc = zero(xmin)
     xlast = Inf
@@ -25,7 +25,7 @@ end
 """
     KSstatistic(data::AbstractVector, alpha)
 
-Return the Kolmogorv-Smirnov statistic
+Return the Колмогоров-Смирнов (Kolmogorov-Smirnov) statistic
 comparing `data` to a power law with power `alpha`. The elements of `data` are
 assumed to be unique.
 """
@@ -33,19 +33,32 @@ function KSstatistic(data::AbstractVector{T}, alpha) where T <: AbstractFloat
     n = length(data)
     xmin = data[1]
     maxdistance = zero(xmin)
-  @inbounds  for i in 0:n-1
+    @inbounds  for i in 0:n-1
         pl::T = 1 - (xmin/data[i+1])^alpha
         distance = abs(pl - i/n)
         if distance > maxdistance maxdistance = distance end
     end
-    maxdistance
+    return maxdistance
+end
+
+"""
+    scanKS(data, powers)
+
+Compute the Kolmogorov Smirnov statistic for several values of α in
+the iterator `powers`. Return the value of α
+that minimizes the KS statistic and the two neighboring values.
+"""
+function scanKS(data, powers)
+    ks = [KSstatistic(data,x) for x in powers]
+    i = indmin(ks)
+    return collect(powers[i-1:i+1])
 end
 
 """
     MLEKS{T <: AbstractFloat}
 
 Container for storing results of MLE estimate and
-Kolmogorv-Smirnov statistic of the exponent of a power law.
+Kolmogorov-Smirnov statistic of the exponent of a power law.
 """
 immutable MLEKS{T <: AbstractFloat}
     alpha::T
@@ -57,10 +70,10 @@ end
     mleKS{T<:AbstractFloat}(data::AbstractVector{T})
 
 Return the maximum likelihood estimate and standard error of the exponent of a power law
-applied to the sorted vector `data`. Also return the Kolmogorv-Smirnov statistic. Results
+applied to the sorted vector `data`. Also return the Kolmogorov-Smirnov statistic. Results
 are returned in an instance of type `MLEKS`.
 """
-function mleKS(data::AbstractVector{T})  where T <: AbstractFloat
+function mleKS(data::AbstractVector{<: AbstractFloat})
     (alpha,stderr) = mle(data)
     KSstat = KSstatistic(data, alpha)
     MLEKS(alpha,stderr,KSstat)
@@ -128,7 +141,7 @@ Perform `mle` approximately `ntrials` times on `data`, increasing `xmin`. Stop t
 if the `stderr` of the estimate `alpha` is greater than `stderrcutoff`. Return an object
 containing statistics about the scan.
 """
-function scanmle(data::AbstractVector{T}, ntrials, stderrcutoff) where T <: AbstractFloat
+function scanmle(data::AbstractVector{<: AbstractFloat}, ntrials=100, stderrcutoff=0.1)
     skip = convert(Int,round(length(data)/ntrials))
     if skip < 1
         skip = 1
@@ -136,8 +149,6 @@ function scanmle(data::AbstractVector{T}, ntrials, stderrcutoff) where T <: Abst
     _scanmle(data, 1:skip:length(data), stderrcutoff)
 end
 
-scanmle(data::AbstractVector{T}, ntrials) where T <: AbstractFloat = scanmle(data,ntrials, 0.1)
-scanmle(data::AbstractVector{T}) where T <: AbstractFloat = scanmle(data,100)
 
 """
     _scanmle{T<:AbstractFloat, V <: Integer}(data::AbstractVector{T}, range::AbstractVector{V},stderrcutoff)
@@ -145,8 +156,8 @@ scanmle(data::AbstractVector{T}) where T <: AbstractFloat = scanmle(data,100)
 Inner function for scanning power-law mle for power `alpha` over `xmin`. `range` specifies which `xmin` to try.
 `stderrcutoff` specifies a standard error in `alpha` at which we stop trials. `range` should be increasing.
 """
-function _scanmle(data::AbstractVector{T}, range::AbstractVector{V},
-                                    stderrcutoff) where T <: AbstractFloat where V <: Integer
+function _scanmle(data::AbstractVector{T}, range::AbstractVector{<: Integer},
+                                    stderrcutoff) where T <: AbstractFloat
     mlescan = MLEScan(T)
     mlescan.nptsall = length(data)
     for i in range
@@ -158,4 +169,4 @@ function _scanmle(data::AbstractVector{T}, range::AbstractVector{V},
     mlescan
 end
 
-#  LocalWords:  Kolmogorv Smirnov
+#  LocalWords:  Kolmogorov Smirnov
