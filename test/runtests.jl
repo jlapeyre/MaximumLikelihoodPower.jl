@@ -1,3 +1,4 @@
+using Compat
 using MaximumLikelihoodEstimatePower
 using Base.Test
 const MLE = MaximumLikelihoodEstimatePower
