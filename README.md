@@ -4,9 +4,7 @@ Linux, OSX: [![Build Status](https://travis-ci.org/jlapeyre/MaximumLikelihoodEst
 &nbsp;
 Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/github/jlapeyre/MaximumLikelihoodEstimatePower.jl?branch=master&svg=true)](https://ci.appveyor.com/project/jlapeyre/maximumlikelihoodestimatepower-jl)
 &nbsp; &nbsp; &nbsp;
-
 [![Coverage Status](https://coveralls.io/repos/github/jlapeyre/MaximumLikelihoodEstimatePower.jl/badge.svg?branch=master)](https://coveralls.io/github/jlapeyre/MaximumLikelihoodEstimatePower.jl?branch=master)
-
 [![codecov.io](http://codecov.io/github/jlapeyre/MaximumLikelihoodEstimatePower.jl/coverage.svg?branch=master)](http://codecov.io/github/jlapeyre/MaximumLikelihoodEstimatePower.jl?branch=master)
 
 Physicists love power laws.
