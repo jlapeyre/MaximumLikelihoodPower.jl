@@ -10,7 +10,7 @@ Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/github/jla
 Physicists love power laws. But, they don't always use the best methods for extracting powers
 from empirical data.
 
-```
+```julia
 using Compat
 import MaximumLikelihoodEstimatePower
 const MLE = MaximumLikelihoodEstimatePower
@@ -39,7 +39,7 @@ The following functions make up the API, but none of them are exported.
 
 ### mle
 
-```
+```julia
     (estimate, stderr) = mle(data::AbstractVector)
 ```
 
@@ -49,7 +49,7 @@ applied to the sorted vector `data`.
 
 ### KSstatistic
 
-```
+```julia
     KSstatistic(data::AbstractVector, alpha) --> Float64
 ```
 
@@ -67,7 +67,7 @@ that minimizes the KS statistic and the two neighboring values.
 
 ### mleKS
 
-```
+```julia
     mleKS{T<:AbstractFloat}(data::AbstractVector{T})
 ```
 
@@ -78,7 +78,7 @@ are returned in an instance of type `MLEKS`.
 
 ### scanmle
 
-```
+```julia
     scanmle(data::AbstractVector, ntrials=100, stderrcutoff=0.1)
 ````
 
@@ -88,7 +88,7 @@ containing statistics about the scan.
 
 ### comparescan
 
-```
+```julia
     comparescan(mle::MLEKS, i, data, mlescan::MLEScan)
 ```
 compare the results of MLE estimation `mle` to record results
