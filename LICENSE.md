@@ -1,4 +1,4 @@
-The MLEPower.jl package is licensed under the MIT "Expat" License:
+The MaximumLikelihoodPower.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2016: John Lapeyre.
 > 

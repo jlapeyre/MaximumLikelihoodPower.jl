@@ -1,6 +1,6 @@
 using Compat
-using MaximumLikelihoodEstimatePower
+using MaximumLikelihoodPower
 using Base.Test
-const MLE = MaximumLikelihoodEstimatePower
+const MLE = MaximumLikelihoodPower
 
 include("testmle.jl")
