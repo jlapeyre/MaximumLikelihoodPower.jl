@@ -1,19 +1,19 @@
-# MaximumLikelihoodEstimatePower
+# MaximumLikelihoodPower
 
-Linux, OSX: [![Build Status](https://travis-ci.org/jlapeyre/MaximumLikelihoodEstimatePower.jl.svg)](https://travis-ci.org/jlapeyre/MaximumLikelihoodEstimatePower.jl)
+Linux, OSX: [![Build Status](https://travis-ci.org/jlapeyre/MaximumLikelihoodPower.jl.svg)](https://travis-ci.org/jlapeyre/MaximumLikelihoodPower.jl)
 &nbsp;
-Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/github/jlapeyre/MaximumLikelihoodEstimatePower.jl?branch=master&svg=true)](https://ci.appveyor.com/project/jlapeyre/maximumlikelihoodestimatepower-jl)
+Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/github/jlapeyre/MaximumLikelihoodPower.jl?branch=master&svg=true)](https://ci.appveyor.com/project/jlapeyre/maximumlikelihoodpower-jl)
 &nbsp; &nbsp; &nbsp;
-[![Coverage Status](https://coveralls.io/repos/github/jlapeyre/MaximumLikelihoodEstimatePower.jl/badge.svg?branch=master)](https://coveralls.io/github/jlapeyre/MaximumLikelihoodEstimatePower.jl?branch=master)
-[![codecov.io](http://codecov.io/github/jlapeyre/MaximumLikelihoodEstimatePower.jl/coverage.svg?branch=master)](http://codecov.io/github/jlapeyre/MaximumLikelihoodEstimatePower.jl?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/jlapeyre/MaximumLikelihoodPower.jl/badge.svg?branch=master)](https://coveralls.io/github/jlapeyre/MaximumLikelihoodPower.jl?branch=master)
+[![codecov.io](http://codecov.io/github/jlapeyre/MaximumLikelihoodPower.jl/coverage.svg?branch=master)](http://codecov.io/github/jlapeyre/MaximumLikelihoodPower.jl?branch=master)
 
 Physicists love power laws. But, they don't always use the best methods for extracting powers
 from empirical data.
 
 ```julia
 using Compat
-import MaximumLikelihoodEstimatePower
-const MLE = MaximumLikelihoodEstimatePower
+import MaximumLikelihoodPower
+const MLE = MaximumLikelihoodPower
 
 julia> seed = 11; α = 0.5;
 
@@ -102,7 +102,7 @@ Clauset, A., Shalizi, C. R., & Newman, M. E. J. (**2009**).
 661–703. http://dx.doi.org/10.1137/070710111
 
 
-<!--  LocalWords:  MaximumLikelihoodEstimatePower OSX nbsp codecov io
+<!--  LocalWords:  MaximumLikelihoodPower OSX nbsp codecov io
  -->
 <!--  LocalWords:  mle stderr KSstatistic
  -->
