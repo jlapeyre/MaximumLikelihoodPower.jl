@@ -99,8 +99,6 @@ end
 
 # FIXME. more clever formatting needed
 function Base.show(io::IO, s::MLEScan)
-#    println(io, "alpha   = " , s.alpha)
-#    println(io, "stderr  = " , s.stderr)
     @printf(io, "alpha   = %.8f\n" , s.alpha)
     @printf(io, "stderr  = %.8f\n" , s.stderr)
     println(io, "minKS   = ", s.minKS)

@@ -1,4 +1,4 @@
 *.jl.cov
 *.jl.*.cov
 *.jl.mem
-Notebooks/
+Notebooks/.ipynb_checkpoints

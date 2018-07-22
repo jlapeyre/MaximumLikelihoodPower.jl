@@ -1,4 +1,4 @@
-module Aux
+module Example
 import Random
 
 """
@@ -25,4 +25,4 @@ function makeparetodata(alpha=0.5, seed=11)
     return [Random.rand(d) for _=1:10^6] |> sort!
 end
 
-end # module Aux
+end # module Example

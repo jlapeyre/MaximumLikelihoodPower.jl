@@ -1,6 +1,6 @@
 using MaximumLikelihoodPower
 const MLE = MaximumLikelihoodPower
-import MaximumLikelihoodPower.Aux
+import MaximumLikelihoodPower.Example
 
 using Test
 

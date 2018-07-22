@@ -10,6 +10,12 @@ Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/github/jla
 Physicists love power laws. But, they don't always use the best methods for extracting powers
 from empirical data.
 
+### Notebook example
+
+Here is a [notebook](http://nbviewer.jupyter.org/github/jlapeyre/MaximumLikelihoodPower.jl/blob/master/Notebooks/MLE_Pareto_distribution.ipynb) using `MaximumLikelihoodPower.jl` (this notebook is in the [Notebooks](Notebooks/) folder in this distribution).
+
+### Command-line example
+
 ```julia
 import MaximumLikelihoodPower
 const MLE = MaximumLikelihoodPower
@@ -17,21 +23,15 @@ const MLE = MaximumLikelihoodPower
 julia> seed = 11; α = 0.5;
 
 # Get 10^6 samples from the Pareto distribution
-julia> data = MLE.Examples.makeparetodata(α, seed);
+julia> data = MLE.Example.makeparetodata(α, seed);
 
 # Minimize the Kolmogorov-Smirnov statistic
 # The second value returned is the minimizing alpha
-julia> MLE.scanKS(data, Compat.range(.4, length=11, stop=.6))
+julia> MLE.scanKS(data, range(.4, length=11, stop=.6))
 3-element Array{Float64,1}:
  0.48
  0.5
  0.52
-
-# Perform mle several times. This estimates the exponent
-# of the tail of the CDF, rather than the PDF, so the
-# estimate is close to 1.5 rather than 0.5.
-julia> MLE.scanmle(data).alpha
-1.5089709151114046
 ```
 
 The following functions make up the API, but none of them are exported.
