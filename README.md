@@ -11,14 +11,13 @@ Physicists love power laws. But, they don't always use the best methods for extr
 from empirical data.
 
 ```julia
-using Compat
 import MaximumLikelihoodPower
 const MLE = MaximumLikelihoodPower
 
 julia> seed = 11; α = 0.5;
 
 # Get 10^6 samples from the Pareto distribution
-julia> data = MLE.Examples.makedata(α,seed);
+julia> data = MLE.Examples.makeparetodata(α, seed);
 
 # Minimize the Kolmogorov-Smirnov statistic
 # The second value returned is the minimizing alpha
@@ -45,7 +44,6 @@ The following functions make up the API, but none of them are exported.
 
 Return the maximum likelihood estimate and standard error of the exponent of a power law
 applied to the sorted vector `data`.
-
 
 ### KSstatistic
 
@@ -75,7 +73,6 @@ Return the maximum likelihood estimate and standard error of the exponent of a p
 applied to the sorted vector `data`. Also return the Kolmogorov-Smirnov statistic. Results
 are returned in an instance of type `MLEKS`.
 
-
 ### scanmle
 
 ```julia
@@ -94,12 +91,11 @@ containing statistics about the scan.
 compare the results of MLE estimation `mle` to record results
 in `mlescan` and update `mlescan`.
 
-
 ### Reference
 
 Clauset, A., Shalizi, C. R., & Newman, M. E. J. (**2009**).
 *Power-Law Distributions in Empirical Data*. SIAM Review, 51(4),
-661–703. http://dx.doi.org/10.1137/070710111
+661–703. http://dx.doi.org/10.1137/070710111, https://arxiv.org/abs/0706.1062
 
 
 <!--  LocalWords:  MaximumLikelihoodPower OSX nbsp codecov io

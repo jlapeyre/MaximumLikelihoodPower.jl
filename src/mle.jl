@@ -1,13 +1,15 @@
+import Printf.@printf
+
 """
     (estimate, stderr) = mle(data::AbstractVector)
 
 Return the maximum likelihood estimate and standard error of the exponent of a power law
 applied to the sorted vector `data`.
 """
-function mle(data::AbstractVector{<:AbstractFloat})
+function mle(data::AbstractVector{T}) where T <:AbstractFloat
     xmin = data[1]
-    acc = zero(xmin)
-    xlast = Inf
+    acc = zero(T)
+    xlast = convert(T, Inf)
     ncount = 0
     for x in data
         if xlast == x
@@ -15,11 +17,11 @@ function mle(data::AbstractVector{<:AbstractFloat})
         end
         xlast = x
         ncount += 1
-        acc += log(x/xmin)
+        acc += log(x / xmin)
     end
-    ahat = 1 + ncount/acc
-    stderr = (ahat-1)/sqrt(ncount)
-    (ahat,stderr)
+    ahat = 1 + ncount / acc
+    stderr = (ahat - 1) / sqrt(ncount)
+    return (ahat, stderr)
 end
 
 """
@@ -34,8 +36,8 @@ function KSstatistic(data::AbstractVector{T}, alpha) where T <: AbstractFloat
     xmin = data[1]
     maxdistance = zero(xmin)
     @inbounds  for i in 0:n-1
-        pl::T = 1 - (xmin/data[i+1])^alpha
-        distance = abs(pl - i/n)
+        pl::T = 1 - (xmin / data[i + 1])^alpha
+        distance = abs(pl - i / n)
         if distance > maxdistance maxdistance = distance end
     end
     return maxdistance
@@ -49,9 +51,9 @@ the iterator `powers`. Return the value of α
 that minimizes the KS statistic and the two neighboring values.
 """
 function scanKS(data, powers)
-    ks = [KSstatistic(data,x) for x in powers]
-    i = indmin(ks)
-    return collect(powers[i-1:i+1])
+    ks = [KSstatistic(data, x) for x in powers]
+    i = argmin(ks)
+    return collect(powers[(i-1):(i+1)])
 end
 
 """
@@ -60,7 +62,7 @@ end
 Container for storing results of MLE estimate and
 Kolmogorov-Smirnov statistic of the exponent of a power law.
 """
-immutable MLEKS{T <: AbstractFloat}
+struct MLEKS{T <: AbstractFloat}
     alpha::T
     stderr::T
     KS::T
@@ -74,9 +76,9 @@ applied to the sorted vector `data`. Also return the Kolmogorov-Smirnov statisti
 are returned in an instance of type `MLEKS`.
 """
 function mleKS(data::AbstractVector{<: AbstractFloat})
-    (alpha,stderr) = mle(data)
+    (alpha, stderr) = mle(data)
     KSstat = KSstatistic(data, alpha)
-    MLEKS(alpha,stderr,KSstat)
+    return MLEKS(alpha, stderr, KSstat)
 end
 
 """
@@ -84,7 +86,7 @@ end
 
 Record best estimate of alpha and associated parameters.
 """
-type MLEScan{T <: AbstractFloat}
+mutable struct MLEScan{T <: AbstractFloat}
     alpha::T
     stderr::T
     minKS::T
@@ -101,25 +103,25 @@ function Base.show(io::IO, s::MLEScan)
 #    println(io, "stderr  = " , s.stderr)
     @printf(io, "alpha   = %.8f\n" , s.alpha)
     @printf(io, "stderr  = %.8f\n" , s.stderr)
-    println(io, "minKS   = " , s.minKS)
-    println(io, "xmin    = " , s.xmin)
-    println(io, "imin    = " , s.imin)
-    println(io, "npts    = " , s.npts)
-    println(io, "nptsall = " , s.nptsall)
-    @printf(io, "pct pts = %.3f\n" , (s.npts/s.nptsall))
-    println(io, "ntrials = " , s.ntrials)
+    println(io, "minKS   = ", s.minKS)
+    println(io, "xmin    = ", s.xmin)
+    println(io, "imin    = ", s.imin)
+    println(io, "npts    = ", s.npts)
+    println(io, "nptsall = ", s.nptsall)
+    @printf(io, "pct pts = %.3f\n", (s.npts / s.nptsall))
+    println(io, "ntrials = ", s.ntrials)
+    return nothing
 end
 
 function MLEScan(T)
     z = zero(T)
-    inf = convert(T,Inf)
-    MLEScan(z,z,inf,z,0,0,0,0)
+    MLEScan(z, z, convert(T, Inf), z, 0, 0, 0, 0)
 end
 
 """
     comparescan(mle::MLEKS, i, data, mlescan::MLEScan)
 
-compare the results of MLE estimation `mle` to record results
+Compare the results of MLE estimation `mle` to record results
 in `mlescan` and update `mlescan`.
 """
 function comparescan(data, mle::MLEKS, i, mlescan::MLEScan)
@@ -142,11 +144,11 @@ if the `stderr` of the estimate `alpha` is greater than `stderrcutoff`. Return a
 containing statistics about the scan.
 """
 function scanmle(data::AbstractVector{<: AbstractFloat}, ntrials=100, stderrcutoff=0.1)
-    skip = convert(Int,round(length(data)/ntrials))
+    skip = convert(Int, round(length(data) / ntrials))
     if skip < 1
         skip = 1
     end
-    _scanmle(data, 1:skip:length(data), stderrcutoff)
+    return _scanmle(data, 1:skip:length(data), stderrcutoff)
 end
 
 
@@ -166,7 +168,7 @@ function _scanmle(data::AbstractVector{T}, range::AbstractVector{<: Integer},
         mleks.stderr > stderrcutoff && break
         comparescan(ndata, mleks, i, mlescan)  # do we want ndata or data here ?
     end
-    mlescan
+    return mlescan
 end
 
 #  LocalWords:  Kolmogorov Smirnov

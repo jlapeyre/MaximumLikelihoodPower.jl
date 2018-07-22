@@ -1,6 +1,7 @@
-using Compat
 using MaximumLikelihoodPower
-using Base.Test
 const MLE = MaximumLikelihoodPower
+import MaximumLikelihoodPower.Aux
+
+using Test
 
 include("testmle.jl")

@@ -1,6 +1,5 @@
 __precompile__(true)
 module MaximumLikelihoodPower
-using Compat
 
 # export mle, KSstatistic, scanmle
 
