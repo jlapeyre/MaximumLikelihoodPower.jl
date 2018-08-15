@@ -20,7 +20,7 @@ Random.rand(p::MyPareto) = p.x0 * Random.rand()^(-one(p.alpha) / p.alpha)
 Create a reproducible sorted array of Pareto distribution samples.
 """
 function makeparetodata(alpha=0.5, seed=11)
-    Random.srand(seed)
+    Random.seed!(seed)
     d = MyPareto(alpha)
     return [Random.rand(d) for _=1:10^6] |> sort!
 end
