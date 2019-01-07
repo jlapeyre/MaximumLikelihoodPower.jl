@@ -9,7 +9,7 @@ Functions: mle, KStatistic, scanmle, scanKS
 """
 MaximumLikelihoodPower
 
-export mle, KSstatistic, scanmle, scanKS
+export mle, KSstatistic, scanmle, scanKS, mleKS
 
 include("mle.jl")
 include("aux.jl")

@@ -21,7 +21,7 @@ function mle(data::AbstractVector{T}) where {T}
         acc += log(x / xmin)
     end
     ahat = 1 + ncount / acc
-    stderr = (ahat - 1) / sqrt(ncount)
+    stderr = (ahat - 1) / sqrt(convert(FT, ncount))
     return (ahat, stderr)
 end
 
@@ -59,12 +59,12 @@ function scanKS(data, powers)
 end
 
 """
-    MLEKS{T <: AbstractFloat}
+    MLEKS{T}
 
 Container for storing results of MLE estimate and
 Kolmogorov-Smirnov statistic of the exponent of a power law.
 """
-struct MLEKS{T <: AbstractFloat}
+struct MLEKS{T}
     alpha::T
     stderr::T
     KS::T
@@ -77,7 +77,7 @@ Return the maximum likelihood estimate and standard error of the exponent of a p
 applied to the sorted vector `data`. Also return the Kolmogorov-Smirnov statistic. Results
 are returned in an instance of type `MLEKS`.
 """
-function mleKS(data::AbstractVector{<: AbstractFloat})
+function mleKS(data::AbstractVector)
     (alpha, stderr) = mle(data)
     KSstat = KSstatistic(data, alpha)
     return MLEKS(alpha, stderr, KSstat)
@@ -115,7 +115,7 @@ end
 
 function MLEScan(T)
     z = zero(T)
-    MLEScan(z, z, convert(T, Inf), z, 0, 0, 0, 0)
+    return MLEScan(z, z, convert(T, Inf), z, 0, 0, 0, 0)
 end
 
 """
@@ -124,31 +124,40 @@ end
 Compare the results of MLE estimation `mle` to record results
 in `mlescan` and update `mlescan`.
 """
-function comparescan(data, mle::MLEKS, i, mlescan::MLEScan)
+function comparescan(mlescan::MLEScan, mle::MLEKS, data, i::Integer)
     if mle.KS < mlescan.minKS
-        mlescan.minKS = mle.KS
-        mlescan.alpha = mle.alpha
-        mlescan.stderr = mle.stderr
-        mlescan.imin = i
-        mlescan.npts = length(data)
-        mlescan.xmin = data[1]
+        copy_mslescan!(mlescan, mle, data, i)
     end
     mlescan.ntrials += 1
+    return nothing
+end
+
+function copy_mslescan!(mlescan::MLEScan, mle::MLEKS, data, i::Integer)
+    mlescan.minKS = mle.KS
+    mlescan.alpha = mle.alpha
+    mlescan.stderr = mle.stderr
+    mlescan.imin = i
+    mlescan.npts = length(data)
+    mlescan.xmin = data[1]
+    return nothing
 end
 
 """
-    scanmle(data::AbstractVector, ntrials=100, stderrcutoff=0.1)
+    scanmle(data; ntrials=100, stderrcutoff=0.1, useKS=false)
 
 Perform `mle` approximately `ntrials` times on `data`, increasing `xmin`. Stop trials
-if the `stderr` of the estimate `alpha` is greater than `stderrcutoff`. Return an object
-containing statistics about the scan.
+if the standard error of the estimate `alpha` is greater than `stderrcutoff`.
+If `useKS` is true, then the application of `mle` giving the smallest KS statistic is
+returned.
+
+Return an object containing statistics of the scan.
 """
-function scanmle(data::AbstractVector{<: AbstractFloat}, ntrials=100, stderrcutoff=0.1)
+function scanmle(data; ntrials=100, stderrcutoff=0.1, useKS=false)
     skip = convert(Int, round(length(data) / ntrials))
     if skip < 1
         skip = 1
     end
-    return _scanmle(data, 1:skip:length(data), stderrcutoff)
+    return _scanmle(data, 1:skip:length(data), stderrcutoff, useKS)
 end
 
 
@@ -158,15 +167,24 @@ end
 Inner function for scanning power-law mle for power `alpha` over `xmin`. `range` specifies which `xmin` to try.
 `stderrcutoff` specifies a standard error in `alpha` at which we stop trials. `range` should be increasing.
 """
-function _scanmle(data::AbstractVector{T}, range::AbstractVector{<: Integer},
-                                    stderrcutoff) where T <: AbstractFloat
-    mlescan = MLEScan(T)
+function _scanmle(data, range::AbstractVector{<: Integer}, stderrcutoff, useKS)
+    mlescan = MLEScan(float(eltype(data)))
     mlescan.nptsall = length(data)
+    lastind::Int = 0
     for i in range
         ndata = @view data[i:end]
         mleks = mleKS(ndata)
-        mleks.stderr > stderrcutoff && break
-        comparescan(ndata, mleks, i, mlescan)  # do we want ndata or data here ?
+        lastind = i
+        if mleks.stderr > stderrcutoff || i == last(range)
+            if ! useKS
+                copy_mslescan!(mlescan, mleks, ndata, i)
+                mlescan.ntrials = i
+            end
+            break
+        end
+        if useKS
+            comparescan(mlescan, mleks, ndata, i)
+        end  # do we want ndata or data here ?
     end
     return mlescan
 end
