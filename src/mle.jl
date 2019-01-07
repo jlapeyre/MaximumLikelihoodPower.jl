@@ -6,10 +6,11 @@ import Printf.@printf
 Return the maximum likelihood estimate and standard error of the exponent of a power law
 applied to the sorted vector `data`.
 """
-function mle(data::AbstractVector{T}) where T <:AbstractFloat
+function mle(data::AbstractVector{T}) where {T}
+    FT = float(T)
     xmin = data[1]
-    acc = zero(T)
-    xlast = convert(T, Inf)
+    acc = zero(FT)
+    xlast = convert(FT, Inf)
     ncount = 0
     for x in data
         if xlast == x
@@ -31,12 +32,13 @@ Return the Колмогоров-Смирнов (Kolmogorov-Smirnov) statistic
 comparing `data` to a power law with power `alpha`. The elements of `data` are
 assumed to be unique.
 """
-function KSstatistic(data::AbstractVector{T}, alpha) where T <: AbstractFloat
+function KSstatistic(data::AbstractVector{T}, alpha) where {T}
     n = length(data)
     xmin = data[1]
     maxdistance = zero(xmin)
+    FT = float(T)
     @inbounds  for i in 0:n-1
-        pl::T = 1 - (xmin / data[i + 1])^alpha
+        pl::FT = 1 - (xmin / data[i + 1])^alpha
         distance = abs(pl - i / n)
         if distance > maxdistance maxdistance = distance end
     end
