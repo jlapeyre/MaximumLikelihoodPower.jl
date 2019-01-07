@@ -34,7 +34,7 @@ julia> MLE.scanKS(data, range(.4, length=11, stop=.6))
  0.52
 ```
 
-The following functions make up the API, but none of them are exported.
+## Functions
 
 ### mle
 
