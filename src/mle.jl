@@ -13,9 +13,7 @@ function mle(data::AbstractVector{T}) where {T}
     xlast = convert(FT, Inf)
     ncount = 0
     for x in data
-        if xlast == x
-            continue
-        end
+        xlast == x && continue
         xlast = x
         ncount += 1
         acc += log(x / xmin)
@@ -37,7 +35,7 @@ function KSstatistic(data::AbstractVector{T}, alpha) where {T}
     xmin = data[1]
     maxdistance = zero(xmin)
     FT = float(T)
-    @inbounds  for i in 0:n-1
+    @inbounds for i in 0:n-1
         pl::FT = 1 - (xmin / data[i + 1])^alpha
         distance = abs(pl - i / n)
         if distance > maxdistance maxdistance = distance end
@@ -48,9 +46,8 @@ end
 """
     scanKS(data, powers)
 
-Compute the Kolmogorov Smirnov statistic for several values of α in
-the iterator `powers`. Return the value of α
-that minimizes the KS statistic and the two neighboring values.
+Compute the Kolmogorov Smirnov statistic for several values of α in the iterator `powers`.
+Return the value of α that minimizes the KS statistic and the two neighboring values.
 """
 function scanKS(data, powers)
     ks = [KSstatistic(data, x) for x in powers]
@@ -148,18 +145,15 @@ end
 Perform `mle` approximately `ntrials` times on `data`, increasing `xmin`. Stop trials
 if the standard error of the estimate `alpha` is greater than `stderrcutoff`.
 If `useKS` is true, then the application of `mle` giving the smallest KS statistic is
-returned.
+returned. Return an object containing statistics of the scan.
 
-Return an object containing statistics of the scan.
+`scanmle` is intended to analayze the power-law behavior of the tail of data.
 """
 function scanmle(data; ntrials=100, stderrcutoff=0.1, useKS=false)
     skip = convert(Int, round(length(data) / ntrials))
-    if skip < 1
-        skip = 1
-    end
+    if skip < 1 skip = 1 end
     return _scanmle(data, 1:skip:length(data), stderrcutoff, useKS)
 end
-
 
 """
     _scanmle{T<:AbstractFloat, V <: Integer}(data::AbstractVector{T}, range::AbstractVector{V},stderrcutoff)

@@ -76,7 +76,7 @@ are returned in an instance of type `MLEKS`.
 ### scanmle
 
 ```julia
-    scanmle(data::AbstractVector, ntrials=100, stderrcutoff=0.1)
+    scanmle(data::AbstractVector; ntrials=100, stderrcutoff=0.1, useKS=false)
 ````
 
 Perform `mle` approximately `ntrials` times on `data`, increasing `xmin`. Stop trials
